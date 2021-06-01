@@ -1,0 +1,24 @@
+{
+  "name": "rtdexcom",
+  "version": "1.0.0",
+  "description": "Get Real Time Dexcom information",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint . --ext .js,.ts,.tsx",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Randall Knutson <randall@knutson.io>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^15.6.1",
+    "@types/node-fetch": "^2.5.10",
+    "eslint": "^7.27.0",
+    "eslint-config-faithlife": "^8.1.0",
+    "prettier": "^2.3.0",
+    "typescript": "^4.3.2"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.1"
+  }
+}
