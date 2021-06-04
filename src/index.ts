@@ -55,11 +55,10 @@ export class Dexcom {
 	baseUrl: string;
 	sessionId: string;
 
-	constructor(username: string, password: string, ous: boolean) {
+	constructor(username: string, password: string, ous = false) {
 		this.baseUrl = ous ? DEXCOM_BASE_URL_OUS : DEXCOM_BASE_URL;
 		this.username = username;
 		this.password = password;
-		this.createSession();
 	}
 
 	private async request(method: string, endpoint: string, params: any, body?: any, depth = 0) {
@@ -70,7 +69,11 @@ export class Dexcom {
 						.map((key) => `${key}=${params[key]}`)
 						.join('&')
 				: '';
-			const response = await fetch(`${this.baseUrl}/${endpoint}${qs}`, { method, body });
+			const response = await fetch(`${this.baseUrl}/${endpoint}${qs}`, {
+				method,
+				body: JSON.stringify(body),
+				headers: { 'Content-Type': 'application/json' },
+			});
 			if (response.ok) {
 				return response.json();
 			} else {
@@ -109,6 +112,11 @@ export class Dexcom {
 	}
 
 	async createSession() {
+		if (this.sessionId) {
+			this.validationSessionId();
+			return;
+		}
+
 		this.validateAccount();
 
 		const json = {
@@ -142,7 +150,7 @@ export class Dexcom {
 	}
 
 	async verifySerialNumber(serialNumber: string) {
-		this.validationSessionId();
+		await this.createSession();
 		if (!serialNumber) {
 			throw new Error(ARGUEMENT_ERROR_SERIAL_NUMBER_NULL_EMPTY);
 		}
@@ -155,7 +163,7 @@ export class Dexcom {
 	}
 
 	async getGlucoseReadings(minutes = 1440, maxCount = 288): Promise<GlucoseReading[]> {
-		this.validationSessionId();
+		await this.createSession();
 		if (minutes < 1 || minutes > 1440) {
 			throw new Error(ARGUEMENT_ERROR_MINUTES_INVALID);
 		}
@@ -174,7 +182,7 @@ export class Dexcom {
 	}
 
 	async getLatestGlucoseReading(): Promise<GlucoseReading> {
-		return (await this.getGlucoseReadings(null, 1))[0];
+		return (await this.getGlucoseReadings(undefined, 1))[0];
 	}
 
 	async getCurrentGlucoseReading(): Promise<GlucoseReading> {
