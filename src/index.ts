@@ -45,7 +45,7 @@ export class GlucoseReading {
 		this.trend = reading.Trend;
 		this.trendDescription = DEXCOM_TREND_DESCRIPTIONS[this.trend];
 		this.trendArrow = DEXCOM_TREND_ARROWS[this.trend];
-		this.time = new Date(reading.WT);
+		this.time = new Date(parseInt(reading.WT.replace(/\D/g, '')));
 	}
 }
 
@@ -65,9 +65,9 @@ export class Dexcom {
 		try {
 			const qs = params
 				? '?' +
-				  Object.keys(params)
-						.map((key) => `${key}=${params[key]}`)
-						.join('&')
+				Object.keys(params)
+					.map((key) => `${key}=${params[key]}`)
+					.join('&')
 				: '';
 			const response = await fetch(`${this.baseUrl}/${endpoint}${qs}`, {
 				method,

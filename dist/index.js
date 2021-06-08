@@ -14,7 +14,7 @@ class GlucoseReading {
         this.trend = reading.Trend;
         this.trendDescription = const_1.DEXCOM_TREND_DESCRIPTIONS[this.trend];
         this.trendArrow = const_1.DEXCOM_TREND_ARROWS[this.trend];
-        this.time = new Date(reading.WT);
+        this.time = new Date(parseInt(reading.WT.replace(/\D/g, '')));
     }
 }
 exports.GlucoseReading = GlucoseReading;
